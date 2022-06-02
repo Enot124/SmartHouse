@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "108051686715",
+    "firebase_url": "https://smart-house-df833-default-rtdb.firebaseio.com",
+    "project_id": "smart-house-df833",
+    "storage_bucket": "smart-house-df833.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108051686715:android:546bab2d6199a2f0b4031e",
+        "android_client_info": {
+          "package_name": "com.example.smarthouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "108051686715-9p2sc5gehcf9o3rbcib5g9n2l1ehoijk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLjNpvqDcugKmIsByWnKDDSjGsEvGOvWw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "108051686715-9p2sc5gehcf9o3rbcib5g9n2l1ehoijk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
