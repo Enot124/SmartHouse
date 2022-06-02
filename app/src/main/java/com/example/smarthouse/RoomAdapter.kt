@@ -5,16 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smarthouse.databinding.RoomItemBinding
+import kotlinx.android.synthetic.main.room_item.view.*
 
-class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomHolder>() {
+class RoomAdapter(val listener : Listener) : RecyclerView.Adapter<RoomAdapter.RoomHolder>() {
     val roomList = ArrayList<Room>()
     class RoomHolder(item : View) : RecyclerView.ViewHolder(item){
         val binding = RoomItemBinding.bind(item)
-        fun bind(room : Room) = with(binding){
+        fun bind(room : Room, listener: Listener) = with(binding){
             ImageRoom.setImageResource(room.imageId)
             RoomName.text = room.name
             LightCount.text = room.stateValue
             DevicesCount.text = room.devicesCount.toString()
+            btnRemoveRoom.setOnClickListener{
+                listener.OnClick(room)
+            }
         }
     }
 
@@ -24,7 +28,7 @@ class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomHolder>() {
     }
 
     override fun onBindViewHolder(holder: RoomHolder, position: Int) {
-        holder.bind(roomList[position])
+        holder.bind(roomList[position], listener)
     }
 
     override fun getItemCount(): Int {
@@ -39,5 +43,9 @@ class RoomAdapter : RecyclerView.Adapter<RoomAdapter.RoomHolder>() {
     fun removeRoom(room: Room){
         roomList.remove(room)
         notifyDataSetChanged()
+    }
+
+    interface Listener{
+        fun OnClick(room: Room)
     }
 }

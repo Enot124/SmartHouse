@@ -11,14 +11,13 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
     lateinit var binding: ActivityMainBinding
-    private var  adapter = RoomAdapter()
+    private var  adapter = RoomAdapter(this)
     var notification: Boolean = true
     lateinit var mDataBase : DatabaseReference
     private var USER_KEY = "Room"
     private var defId = 0
-    var rooms : ArrayList<Room> ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,36 +61,6 @@ class MainActivity : AppCompatActivity() {
         var builder = AlertDialog.Builder(this)
         builder.setTitle("Окно редактирования комнаты")
         builder.setPositiveButton("OK"){ dialogInterface , which ->
-            /*var view = layoutInflater.inflate(R.layout.room_item, null)
-             var dialog = dialogInterface as AlertDialog
-             var editText = dialog.findViewById<EditText>(R.id.EdText)
-             var btnRemove = view.findViewById<Button>(R.id.btnRemoveRoom)
-
-             var rname = view.findViewById<TextView>(R.id.RoomName)
-             var img = view.findViewById<ImageView>(R.id.ImageRoom)
-             rname.text = editText?.text
-             val text = rname.text.toString()
-             when (text) {
-                 "Гостиная","Hall" -> img.setImageResource(R.drawable.bed2)
-                 "Кухня","Kitchen" -> img.setImageResource(R.drawable.kitchen)
-                 "Ванная","Bathroom" -> img.setImageResource(R.drawable.bath)
-                 "Спальня","Bedroom"-> img.setImageResource(R.drawable.bed1)
-                 "Детская","Childroom" -> img.setImageResource(R.drawable.child)
-                 else -> img.setImageResource(R.drawable.house)
-
-             }
-
-             rooms?.add(room)
-             var id = mDataBase.key + defId++
-             var name = text
-             var state = false
-             var stateValue = "OFF"
-             var devCount = 0
-             var room = Room(id.toString(), name, state, stateValue, devCount)
-             mDataBase.push().setValue(room)
-             binding.ScrollLayout.addView(view)
-             Toast.makeText(this, "Комната успешно создана", Toast.LENGTH_SHORT).show()
-             GoHome()*/
             var dialog = dialogInterface as AlertDialog
             var editText = dialog.findViewById<EditText>(R.id.EdText)
             val text = editText?.text.toString()
@@ -106,6 +75,7 @@ class MainActivity : AppCompatActivity() {
 
             }
             val room = Room(defId++.toString(),text,imageId,false,"OFF",0)
+            mDataBase.push().setValue(room)
             adapter.addRoom(room)
         }
 
@@ -133,13 +103,13 @@ class MainActivity : AppCompatActivity() {
 
     fun GoHome()
     {
-        binding.ScrollRoom.visibility = View.VISIBLE
+        binding.rcvRoom.visibility = View.VISIBLE
         binding.ScrollDevice.visibility = View.GONE
     }
 
     fun GoRoom()
     {
-        binding.ScrollRoom.visibility = View.GONE
+        binding.rcvRoom.visibility = View.GONE
         binding.ScrollDevice.visibility = View.VISIBLE
     }
 
@@ -158,6 +128,18 @@ class MainActivity : AppCompatActivity() {
             binding.Notification.background = getDrawable(R.drawable.on_ico)
             Toast.makeText(this, "Уведомления влючены", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun OnClick(room: Room) {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("Вы действительно хотите удалить комнату?")
+        builder.setMessage("Подтвердите удаление")
+        builder.setPositiveButton("Удалить") { dialogInterface, which ->
+            adapter.removeRoom(room)
+        }
+        builder.setNeutralButton("Назад"){ dialogInterface , which ->
+        }
+        builder.show()
     }
 
 

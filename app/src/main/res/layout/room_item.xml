@@ -93,10 +93,10 @@
             <Button
                 android:id="@+id/btnRemoveRoom"
                 android:layout_width="30dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/three" />
 
 
