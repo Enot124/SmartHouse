@@ -162,12 +162,24 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <ExpandableListView
-            android:id="@+id/lvDevice"
+        <LinearLayout
+            android:id="@+id/llDeviceMenu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        </ExpandableListView>
+            <Button
+                android:id="@+id/btnAddDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Добавить устройство" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvRoom"

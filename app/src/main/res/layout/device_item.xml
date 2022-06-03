@@ -2,18 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clDevice"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#9A9898">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cvDevice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
-        app:cardCornerRadius="15dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,11 +22,12 @@
         app:layout_constraintVertical_bias="0.0">
 
         <RelativeLayout
+            android:id="@+id/rlDevice"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imgDevice"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
@@ -34,14 +36,15 @@
                 app:srcCompat="@drawable/device_off" />
 
             <LinearLayout
+                android:id="@+id/llDeviceName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/imageView"
+                android:layout_toEndOf="@+id/imgDevice"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/tvDeviceName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="DeviceName"
@@ -49,7 +52,7 @@
                     android:textSize="16dp" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/tvdRoomName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="RoomName"
@@ -57,16 +60,16 @@
             </LinearLayout>
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/swDevice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="15dp"
-                android:layout_toStartOf="@+id/button"
+                android:layout_toStartOf="@+id/btnRemoveDevice"
                 android:text="OFF" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/btnRemoveDevice"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_alignParentEnd="true"

@@ -12,9 +12,10 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.room_item.*
 
 
-class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
+class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.ListenerDevice{
     lateinit var binding: ActivityMainBinding
     private var  adapter = RoomAdapter(this)
+    private var devAdapter = DeviceAdapter(this)
     var notification: Boolean = true
     lateinit var mDataBase : DatabaseReference
     private var USER_KEY = "Room"
@@ -47,13 +48,17 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
             GoRoom()
         }
 
-
+        binding.btnAddDevice.setOnClickListener{
+            CreateDevice()
+        }
     }
 
     private fun init(){
         binding.apply {
             rcvRoom.layoutManager = LinearLayoutManager(this@MainActivity)
             rcvRoom.adapter = adapter
+            rcvDevice.layoutManager = LinearLayoutManager(this@MainActivity)
+            rcvDevice.adapter = devAdapter
         }
     }
 
@@ -94,6 +99,11 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
         builder.show()
     }
 
+    fun CreateDevice(){
+        val device = Device(0,"Light","Room", R.drawable.device_off, false)
+        devAdapter.addRoom(device)
+    }
+
     fun ViewMenu()
     {
         if (binding.LayoutScrollMenu.visibility != View.GONE)
@@ -111,13 +121,13 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
     fun GoHome()
     {
         binding.rcvRoom.visibility = View.VISIBLE
-        binding.rcvRoom.visibility = View.GONE
+        binding.llDeviceMenu.visibility = View.GONE
     }
 
     fun GoRoom()
     {
         binding.rcvRoom.visibility = View.GONE
-        binding.rcvRoom.visibility = View.VISIBLE
+        binding.llDeviceMenu.visibility = View.VISIBLE
     }
 
     fun SetNotification()
@@ -147,6 +157,10 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
         builder.setNeutralButton("Назад"){ dialogInterface , which ->
         }
         builder.show()
+    }
+
+    override fun OnSwitch(device: Device) {
+        TODO("Not yet implemented")
     }
 
 
