@@ -27,4 +27,6 @@ import com.example.smarthouse.databinding.ActivityMainBinding
 
 }*/
 
-data class Room( val id: String, val name: String, val imageId : Int, val state: Boolean, val stateValue : String, val devicesCount : Int)
+data class Room( val id: String, val name: String, val imageId : Int, var state: Boolean, var stateValue : String, var devicesCount : Int){
+    var Devices : ArrayList<Device> ?= null
+}

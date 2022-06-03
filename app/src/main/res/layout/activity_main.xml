@@ -10,6 +10,7 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -61,10 +62,10 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
                 android:layout_weight="0"
                 android:background="@drawable/add_ico"
-                android:layout_centerVertical="true"
                 android:textSize="20dp" />
         </RelativeLayout>
 
@@ -161,24 +162,20 @@
             </LinearLayout>
         </HorizontalScrollView>
 
+        <ExpandableListView
+            android:id="@+id/lvDevice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ExpandableListView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvRoom"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ScrollView
-            android:id="@+id/ScrollDevice"
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
             android:visibility="gone">
 
-            <ExpandableListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </ExpandableListView>
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 

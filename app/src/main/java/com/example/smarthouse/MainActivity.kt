@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smarthouse.databinding.ActivityMainBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.room_item.*
 
 
 class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
             var dialog = dialogInterface as AlertDialog
             var editText = dialog.findViewById<EditText>(R.id.EdText)
             val text = editText?.text.toString()
-            var imageId = 0
+            var imageId: Int
             imageId = when (text) {
                 "Гостиная","Hall" -> R.drawable.bed2
                 "Кухня","Kitchen" -> R.drawable.kitchen
@@ -74,7 +75,13 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
                 else -> R.drawable.house
 
             }
-            val room = Room(defId++.toString(),text,imageId,false,"OFF",0)
+            val room = Room(defId++.toString(),text,imageId,false,"OFF", 0)
+            var count = room.Devices?.size
+            if (count != null) {
+                room.devicesCount = count.toInt()
+            }
+            else count = 0
+            room.devicesCount = count
             mDataBase.push().setValue(room)
             adapter.addRoom(room)
         }
@@ -104,13 +111,13 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener{
     fun GoHome()
     {
         binding.rcvRoom.visibility = View.VISIBLE
-        binding.ScrollDevice.visibility = View.GONE
+        binding.rcvRoom.visibility = View.GONE
     }
 
     fun GoRoom()
     {
         binding.rcvRoom.visibility = View.GONE
-        binding.ScrollDevice.visibility = View.VISIBLE
+        binding.rcvRoom.visibility = View.VISIBLE
     }
 
     fun SetNotification()

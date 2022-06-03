@@ -8,9 +8,9 @@ import com.example.smarthouse.databinding.RoomItemBinding
 import kotlinx.android.synthetic.main.room_item.view.*
 
 class RoomAdapter(val listener : Listener) : RecyclerView.Adapter<RoomAdapter.RoomHolder>() {
-    val roomList = ArrayList<Room>()
+    private val roomList = ArrayList<Room>()
     class RoomHolder(item : View) : RecyclerView.ViewHolder(item){
-        val binding = RoomItemBinding.bind(item)
+        private val binding = RoomItemBinding.bind(item)
         fun bind(room : Room, listener: Listener) = with(binding){
             ImageRoom.setImageResource(room.imageId)
             RoomName.text = room.name
