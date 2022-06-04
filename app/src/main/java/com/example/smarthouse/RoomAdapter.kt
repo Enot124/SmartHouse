@@ -8,7 +8,7 @@ import com.example.smarthouse.databinding.RoomItemBinding
 import kotlinx.android.synthetic.main.room_item.view.*
 
 class RoomAdapter(val listener : Listener) : RecyclerView.Adapter<RoomAdapter.RoomHolder>() {
-    private val roomList = ArrayList<Room>()
+    val roomList = ArrayList<Room>()
     class RoomHolder(item : View) : RecyclerView.ViewHolder(item){
         private val binding = RoomItemBinding.bind(item)
         fun bind(room : Room, listener: Listener) = with(binding){

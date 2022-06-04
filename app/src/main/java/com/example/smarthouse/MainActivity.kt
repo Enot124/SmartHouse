@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smarthouse.databinding.ActivityMainBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.device_dialog.*
+import kotlinx.android.synthetic.main.device_dialog.view.*
+import kotlinx.android.synthetic.main.device_item.*
 import kotlinx.android.synthetic.main.room_item.*
 
 
@@ -100,8 +103,34 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     }
 
     fun CreateDevice(){
-        val device = Device(0,"Light","Room", R.drawable.device_off, false)
-        devAdapter.addRoom(device)
+
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("Окно редактирования устройства")
+        builder.setPositiveButton("OK"){ dialogInterface , which ->
+            var dialog = dialogInterface as AlertDialog
+            var editText = dialog.findViewById<EditText>(R.id.edDeviceName)
+            val text = editText?.text.toString()
+            val selectedRadioButton = dialog.findViewById<RadioButton>(dialog.rgRoomName.checkedRadioButtonId)
+            val position = dialog.rgRoomName.indexOfChild(selectedRadioButton)
+            val room = adapter.roomList[position]
+            val device = Device(0,text,room.name, R.drawable.device_off, false)
+            room.Devices?.add(device)
+            devAdapter.addDevice(device)
+            mDataBase.push().setValue(device)
+        }
+
+        builder.setNeutralButton("Назад"){ dialogInterface , which ->
+        }
+        var cl = layoutInflater.inflate(R.layout.device_dialog, null)
+        adapter.roomList.forEach{
+        var rb = RadioButton(this)
+        rb.text = it.name
+        rb.id = 100+it.id.toInt()
+        cl.rgRoomName.addView(rb)
+    }
+
+        builder.setView(cl)
+        builder.show()
     }
 
     fun ViewMenu()
@@ -122,12 +151,16 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     {
         binding.rcvRoom.visibility = View.VISIBLE
         binding.llDeviceMenu.visibility = View.GONE
+        binding.House.background = getDrawable(R.drawable.back_house_on)
+        binding.Room.background = getDrawable(R.drawable.back_light_off)
     }
 
     fun GoRoom()
     {
         binding.rcvRoom.visibility = View.GONE
         binding.llDeviceMenu.visibility = View.VISIBLE
+        binding.House.background = getDrawable(R.drawable.back_house_off)
+        binding.Room.background = getDrawable(R.drawable.back_light_on)
     }
 
     fun SetNotification()
@@ -159,8 +192,17 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         builder.show()
     }
 
-    override fun OnSwitch(device: Device) {
-        TODO("Not yet implemented")
+    override fun OnSwitch(device: Device, state: Boolean) {
+        if(state)
+        {
+            device.imageId = R.drawable.device_on
+            device.state = true
+        }
+        else{
+            device.imageId = R.drawable.device_off
+            device.state = false
+        }
+        devAdapter.notifyDataSetChanged()
     }
 
 
