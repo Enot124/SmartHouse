@@ -66,7 +66,21 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="15dp"
                 android:layout_toStartOf="@+id/btnRemoveDevice"
-                android:text="OFF" />
+                android:text="OFF"
+                android:visibility="gone" />
+
+            <SeekBar
+                android:id="@+id/sbDevice"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
+                android:layout_toStartOf="@+id/btnRemoveDevice"
+                android:progressBackgroundTint="#000000"
+                android:progressTint="#EFF605"
+                android:thumbTint="#FAC607"
+                android:min="0"
+                android:max="100"/>
 
             <Button
                 android:id="@+id/btnRemoveDevice"

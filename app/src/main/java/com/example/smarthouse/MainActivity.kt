@@ -1,5 +1,6 @@
 package com.example.smarthouse
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -73,8 +74,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             var dialog = dialogInterface as AlertDialog
             var editText = dialog.findViewById<EditText>(R.id.EdText)
             val text = editText?.text.toString()
-            var imageId: Int
-            imageId = when (text) {
+            var imageId: Int = when (text) {
                 "Гостиная","Hall" -> R.drawable.bed2
                 "Кухня","Kitchen" -> R.drawable.kitchen
                 "Ванная","Bathroom" -> R.drawable.bath
@@ -83,13 +83,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                 else -> R.drawable.house
 
             }
-            val room = Room(defId++.toString(),text,imageId,false,"OFF", 0)
-            var count = room.Devices?.size
-            if (count != null) {
-                room.devicesCount = count.toInt()
-            }
-            else count = 0
-            room.devicesCount = count
+            val room = Room(defId++.toString(),text,imageId,false,"OFF")
             mDataBase.push().setValue(room)
             adapter.addRoom(room)
         }
@@ -110,12 +104,22 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             var dialog = dialogInterface as AlertDialog
             var editText = dialog.findViewById<EditText>(R.id.edDeviceName)
             val text = editText?.text.toString()
+            val selectedDeviceType = dialog.findViewById<RadioButton>(dialog.rgDeviceType.checkedRadioButtonId)
+            val typePosition = dialog.rgDeviceType.indexOfChild(selectedDeviceType)
+            val imageId = when(typePosition){
+                0 -> R.drawable.device_off
+                1 -> R.drawable.dimmer_off
+                2 -> R.drawable.sensor_off
+                3 -> R.drawable.door_off
+                else -> {R.drawable.device_off}
+            }
             val selectedRadioButton = dialog.findViewById<RadioButton>(dialog.rgRoomName.checkedRadioButtonId)
             val position = dialog.rgRoomName.indexOfChild(selectedRadioButton)
             val room = adapter.roomList[position]
-            val device = Device(0,text,room.name, R.drawable.device_off, false)
-            room.Devices?.add(device)
+            val device = Device(0,text,room.name, imageId, false, "OFF",typePosition)
+            room.Devices.add(device)
             devAdapter.addDevice(device)
+            adapter.notifyDataSetChanged()
             mDataBase.push().setValue(device)
         }
 
@@ -197,11 +201,52 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         {
             device.imageId = R.drawable.device_on
             device.state = true
+            device.stateValue = "ON"
+            adapter.roomList.forEach{
+                if(it.name == device.roomName) {
+                    it.state = true
+                    adapter.setStateRoom(it)
+                }
+            }
         }
         else{
             device.imageId = R.drawable.device_off
             device.state = false
+            device.stateValue = "OFF"
+            adapter.roomList.forEach{
+                if(it.name == device.roomName) {
+                    adapter.checkStateRoom(it)
+                }
+            }
         }
+        devAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun OnProgress(device: Device, progress: Int) {
+        if (progress != 0) {
+            device.imageId = R.drawable.dimmer_on
+            device.state = true
+            adapter.roomList.forEach{
+                if(it.name == device.roomName) {
+                    it.state = true
+                    adapter.checkStateRoom(it)
+                }
+            }
+        }
+        else{
+            device.imageId = R.drawable.dimmer_off
+            device.state = false
+            adapter.roomList.forEach {
+            if (it.name == device.roomName) {
+                it.state = false
+                adapter.checkStateRoom(it)
+                }
+            }
+        }
+    }
+
+    override fun save() {
         devAdapter.notifyDataSetChanged()
     }
 

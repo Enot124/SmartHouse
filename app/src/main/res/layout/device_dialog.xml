@@ -101,7 +101,14 @@
                         android:id="@+id/rbSensor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Датчик"
+                        android:text="Датчик движения"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <RadioButton
+                        android:id="@+id/rbGerkon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Датчик геркон"
                         tools:ignore="TouchTargetSizeCheck" />
                 </RadioGroup>
             </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.smarthouse
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,14 @@ class RoomAdapter(val listener : Listener) : RecyclerView.Adapter<RoomAdapter.Ro
             ImageRoom.setImageResource(room.imageId)
             RoomName.text = room.name
             LightCount.text = room.stateValue
-            DevicesCount.text = room.devicesCount.toString()
+            if(room.state)
+                LightCount.setTextColor(Color.GREEN)
+            else
+                LightCount.setTextColor(Color.RED)
+            if(room.Devices.isEmpty())
+                DevicesCount.text = "0"
+            else
+            DevicesCount.text = room.Devices.size.toString()
             btnRemoveRoom.setOnClickListener{
                 listener.OnClick(room)
             }
@@ -43,6 +51,28 @@ class RoomAdapter(val listener : Listener) : RecyclerView.Adapter<RoomAdapter.Ro
     fun removeRoom(room: Room){
         roomList.remove(room)
         notifyDataSetChanged()
+    }
+
+    fun checkStateRoom(room: Room){
+        var state = 0
+            room.Devices.forEach {
+                if(it.state)
+                { room.state = true
+                    state++
+                }
+            }
+            if (state == 0)
+                room.state = false
+            setStateRoom(room)
+            notifyDataSetChanged()
+
+    }
+
+    fun setStateRoom(room: Room){
+        if(room.state)
+            room.stateValue = "ON"
+        else
+            room.stateValue = "OFF"
     }
 
     interface Listener{
