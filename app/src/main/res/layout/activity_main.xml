@@ -162,11 +162,20 @@
             </LinearLayout>
         </HorizontalScrollView>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvRoom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
         <LinearLayout
             android:id="@+id/llDeviceMenu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/btnAddDevice"
@@ -174,8 +183,8 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/add_device"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/add_device" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvDevice"
@@ -184,14 +193,25 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcvRoom"
+        <LinearLayout
+            android:id="@+id/llJournal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:visibility="visible">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <Button
+                android:id="@+id/btnResetJournal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Обновить" />
 
+            <ListView
+                android:id="@+id/lvJournal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#7EFFFFFF" />
+        </LinearLayout>
     </LinearLayout>
 
 

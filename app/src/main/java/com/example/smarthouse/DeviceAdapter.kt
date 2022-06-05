@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smarthouse.databinding.DeviceItemBinding
+import kotlinx.android.synthetic.main.device_item.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DeviceAdapter(val listener : ListenerDevice) : RecyclerView.Adapter<DeviceAdapter.DeviceHolder>(){
     var deviceList = ArrayList<Device>()
@@ -56,14 +59,20 @@ class DeviceAdapter(val listener : ListenerDevice) : RecyclerView.Adapter<Device
                     sbDevice.visibility = View.GONE
                     imgSensorState.visibility = View.VISIBLE
                     imgGerkonState.visibility = View.GONE
-                    imgSensorState.setImageResource(R.drawable.sensor_state_off)
+                    if(device.state)
+                        imgSensorState.setImageResource(R.drawable.sensor_state_on)
+                    else
+                        imgSensorState.setImageResource(R.drawable.sensor_state_off)
                 }
                 3 -> {
                     swDevice.visibility = View.GONE
                     sbDevice.visibility = View.GONE
                     imgSensorState.visibility = View.GONE
                     imgGerkonState.visibility = View.VISIBLE
-                    imgGerkonState.setImageResource(R.drawable.gerkon_state_off)
+                    if(device.state)
+                        imgGerkonState.setImageResource(R.drawable.gerkon_state_on)
+                    else
+                        imgGerkonState.setImageResource(R.drawable.gerkon_state_off)
                 }
             }
             imgDevice.setImageResource(device.imageId)

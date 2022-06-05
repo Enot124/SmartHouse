@@ -1,6 +1,5 @@
 package com.example.smarthouse
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -8,14 +7,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smarthouse.databinding.ActivityMainBinding
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.device_dialog.*
 import kotlinx.android.synthetic.main.device_dialog.view.*
 import kotlinx.android.synthetic.main.device_item.*
-import kotlinx.android.synthetic.main.room_item.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.ListenerDevice{
@@ -24,9 +22,11 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     private var devAdapter = DeviceAdapter(this)
     var notification: Boolean = true
     lateinit var mDataBase : DatabaseReference
-    private var USER_KEY = "Room"
+    private var journal = ArrayList<String>()
+    private var USER_KEY = "Journal"
     private var defId = 0
     private val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+    lateinit var adapterJournal : ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,18 +54,26 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         binding.Room.setOnClickListener{
             GoRoom()
         }
+        binding.Journal.setOnClickListener{
+            GoJournal()
+        }
 
         binding.btnAddDevice.setOnClickListener{
             CreateDevice()
         }
+        binding.btnResetJournal.setOnClickListener{
+            ResetJournal()
+        }
     }
 
     private fun init(){
+        adapterJournal = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, journal)
         binding.apply {
             rcvRoom.layoutManager = LinearLayoutManager(this@MainActivity)
             rcvRoom.adapter = adapter
             rcvDevice.layoutManager = LinearLayoutManager(this@MainActivity)
             rcvDevice.adapter = devAdapter
+            lvJournal.adapter = adapterJournal
         }
     }
 
@@ -91,7 +99,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                 adapter.addRoom(room)
                 Toast.makeText(this, "Комната была создана", Toast.LENGTH_SHORT).show()
                 val date = Date()
-                val stroke = sdf.format(date) + "  Комната " + room.name + " была создана"
+                val stroke = sdf.format(date) + "  Комната \"" + room.name + "\" была создана"
                 mDataBase.push().setValue(stroke)
             }
             else
@@ -137,7 +145,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                         adapter.notifyDataSetChanged()
                         Toast.makeText(this, "Устройство создано", Toast.LENGTH_SHORT).show()
                         val date = Date()
-                        val stroke = sdf.format(date) + "  Устройство " + device.name + " в комнате " + device.roomName + " было создано"
+                        val stroke = sdf.format(date) + "  Устройство \"" + device.name + "\" в комнате " + device.roomName + " было создано"
                         mDataBase.push().setValue(stroke)
                 }
                 else
@@ -184,16 +192,30 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     {
         binding.rcvRoom.visibility = View.VISIBLE
         binding.llDeviceMenu.visibility = View.GONE
+        binding.llJournal.visibility = View.GONE
         binding.House.background = getDrawable(R.drawable.back_house_on)
         binding.Room.background = getDrawable(R.drawable.back_light_off)
+        binding.Journal.background = getDrawable(R.drawable.back_journal_off)
     }
 
     fun GoRoom()
     {
         binding.rcvRoom.visibility = View.GONE
         binding.llDeviceMenu.visibility = View.VISIBLE
+        binding.llJournal.visibility = View.GONE
         binding.House.background = getDrawable(R.drawable.back_house_off)
         binding.Room.background = getDrawable(R.drawable.back_light_on)
+        binding.Journal.background = getDrawable(R.drawable.back_journal_off)
+    }
+
+    fun GoJournal()
+    {
+        binding.rcvRoom.visibility = View.GONE
+        binding.llDeviceMenu.visibility = View.GONE
+        binding.llJournal.visibility = View.VISIBLE
+        binding.House.background = getDrawable(R.drawable.back_house_off)
+        binding.Room.background = getDrawable(R.drawable.back_light_off)
+        binding.Journal.background = getDrawable(R.drawable.back_journal_on)
     }
 
     fun SetNotification()
@@ -211,6 +233,26 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             binding.Notification.background = getDrawable(R.drawable.on_ico)
             Toast.makeText(this, "Уведомления влючены", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun ResetJournal()
+    {
+        val vListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                journal.clear()
+                for(ds : DataSnapshot in dataSnapshot.children){
+                    journal.add(ds.value.toString())
+                }
+                adapterJournal.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        }
+        mDataBase.addValueEventListener(vListener)
+
+
     }
 
     override fun OnClick(room: Room) {
@@ -247,7 +289,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             }
             Toast.makeText(this, "Устройство удалено", Toast.LENGTH_SHORT).show()
             val date = Date()
-            val stroke = sdf.format(date) + "  Удаление датчика " + device.name + " из комнаты " + device.roomName
+            val stroke = sdf.format(date) + "  Удаление устройства \"" + device.name + "\" из комнаты " + device.roomName
             mDataBase.push().setValue(stroke)
         }
         builder.setNeutralButton("Назад"){ dialogInterface , which ->
@@ -268,7 +310,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                     adapter.setStateRoom(it)
                 }
             }
-            val stroke = sdf.format(date) + "  Устройство " + device.name + ", " + device.roomName + " было включено"
+            val stroke = sdf.format(date) + "  Устройство \"" + device.name + "\", " + device.roomName + " было включено"
             mDataBase.push().setValue(stroke)
         }
         else{
@@ -280,7 +322,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                     adapter.checkStateRoom(it)
                 }
             }
-            val stroke = sdf.format(date) + "  Устройство " + device.name + ", " + device.roomName + " было выключено"
+            val stroke = sdf.format(date) + "  Устройство \"" + device.name + "\", " + device.roomName + " было выключено"
             mDataBase.push().setValue(stroke)
         }
         devAdapter.notifyDataSetChanged()
@@ -311,36 +353,34 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     }
     override fun SensorClick(device: Device) {
         if(!device.state) {
-            imgSensorState.setImageResource(R.drawable.sensor_state_on)
             device.state = true
             val date = Date()
-            val stroke = sdf.format(date) + "  Датчик " + device.name + ", " + device.roomName + " был активирован"
+            val stroke = sdf.format(date) + "  Датчик \"" + device.name + "\", " + device.roomName + " был активирован"
             mDataBase.push().setValue(stroke)
         }
         else {
-            imgSensorState.setImageResource(R.drawable.sensor_state_off)
             device.state = false
         }
+        devAdapter.notifyDataSetChanged()
     }
 
     override fun GerkonClick(device: Device) {
         if(!device.state) {
-            imgGerkonState.setImageResource(R.drawable.gerkon_state_on)
             device.state = true
             val date = Date()
-            val stroke = sdf.format(date) + "  Геркон " + device.name + ", " + device.roomName + " был активирован"
+            val stroke = sdf.format(date) + "  Геркон \"" + device.name + "\", " + device.roomName + " был активирован"
             mDataBase.push().setValue(stroke)
         }
         else {
-            imgGerkonState.setImageResource(R.drawable.gerkon_state_off)
             device.state = false
         }
+        devAdapter.notifyDataSetChanged()
     }
 
     override fun save(device: Device) {
         devAdapter.notifyDataSetChanged()
         val date = Date()
-        val stroke = sdf.format(date) + "  Диммер " + device.name + ", " + device.roomName + " был изменён"
+        val stroke = sdf.format(date) + "  Диммер \"" + device.name + "\", " + device.roomName + " был изменён"
         mDataBase.push().setValue(stroke)
     }
 
