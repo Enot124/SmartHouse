@@ -12,6 +12,9 @@ class DeviceAdapter(val listener : ListenerDevice) : RecyclerView.Adapter<Device
     class DeviceHolder(item : View) : RecyclerView.ViewHolder(item) {
         private val binding = DeviceItemBinding.bind(item)
         fun bind(device: Device, listener: ListenerDevice) = with(binding) {
+            btnRemoveDevice.setOnClickListener{
+                listener.OnClick(device)
+            }
             swDevice.setOnCheckedChangeListener { buttonView, isChecked ->
                 listener.OnSwitch(device, isChecked)
             }
@@ -24,19 +27,43 @@ class DeviceAdapter(val listener : ListenerDevice) : RecyclerView.Adapter<Device
                     listener.OnProgress(device,progress)
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {listener.save()}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {listener.save(device)}
             })
+            imgSensorState.setOnClickListener{
+                listener.SensorClick(device)
+            }
+
+            imgGerkonState.setOnClickListener{
+                listener.GerkonClick(device)
+            }
+
             when(device.type)
             {
-                0 ->
-                {
+                0 -> {
                     swDevice.visibility = View.VISIBLE
                     sbDevice.visibility = View.GONE
+                    imgSensorState.visibility = View.GONE
+                    imgGerkonState.visibility = View.GONE
                 }
-                1 ->
-                {
+                1 -> {
                     swDevice.visibility = View.GONE
                     sbDevice.visibility = View.VISIBLE
+                    imgSensorState.visibility = View.GONE
+                    imgGerkonState.visibility = View.GONE
+                }
+                2 -> {
+                    swDevice.visibility = View.GONE
+                    sbDevice.visibility = View.GONE
+                    imgSensorState.visibility = View.VISIBLE
+                    imgGerkonState.visibility = View.GONE
+                    imgSensorState.setImageResource(R.drawable.sensor_state_off)
+                }
+                3 -> {
+                    swDevice.visibility = View.GONE
+                    sbDevice.visibility = View.GONE
+                    imgSensorState.visibility = View.GONE
+                    imgGerkonState.visibility = View.VISIBLE
+                    imgGerkonState.setImageResource(R.drawable.gerkon_state_off)
                 }
             }
             imgDevice.setImageResource(device.imageId)
@@ -68,13 +95,13 @@ class DeviceAdapter(val listener : ListenerDevice) : RecyclerView.Adapter<Device
         deviceList.remove(device)
         notifyDataSetChanged()
     }
-    fun save(){
-        notifyDataSetChanged()
-    }
 
     interface ListenerDevice{
+        fun OnClick(device: Device)
         fun OnSwitch(device: Device,state:Boolean)
         fun OnProgress(device: Device,progress: Int)
-        fun save()
+        fun SensorClick(device: Device)
+        fun GerkonClick(device: Device)
+        fun save(device: Device)
     }
 }

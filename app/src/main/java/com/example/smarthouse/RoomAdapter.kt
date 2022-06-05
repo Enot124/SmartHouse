@@ -56,9 +56,11 @@ class RoomAdapter(val listener : Listener) : RecyclerView.Adapter<RoomAdapter.Ro
     fun checkStateRoom(room: Room){
         var state = 0
             room.Devices.forEach {
-                if(it.state)
-                { room.state = true
-                    state++
+                if(it.state) {
+                    if (it.type != 2 && it.type != 3) {
+                        room.state = true
+                        state++
+                    }
                 }
             }
             if (state == 0)

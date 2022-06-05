@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.device_dialog.*
 import kotlinx.android.synthetic.main.device_dialog.view.*
 import kotlinx.android.synthetic.main.device_item.*
 import kotlinx.android.synthetic.main.room_item.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.ListenerDevice{
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     lateinit var mDataBase : DatabaseReference
     private var USER_KEY = "Room"
     private var defId = 0
+    private val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,18 +77,25 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             var dialog = dialogInterface as AlertDialog
             var editText = dialog.findViewById<EditText>(R.id.EdText)
             val text = editText?.text.toString()
-            var imageId: Int = when (text) {
-                "Гостиная","Hall" -> R.drawable.bed2
-                "Кухня","Kitchen" -> R.drawable.kitchen
-                "Ванная","Bathroom" -> R.drawable.bath
-                "Спальня","Bedroom"-> R.drawable.bed1
-                "Детская","Childroom" -> R.drawable.child
-                else -> R.drawable.house
+            if (text != "") {
+                var imageId: Int = when (text) {
+                    "Гостиная", "Hall" -> R.drawable.bed2
+                    "Кухня", "Kitchen" -> R.drawable.kitchen
+                    "Ванная", "Bathroom" -> R.drawable.bath
+                    "Спальня", "Bedroom" -> R.drawable.bed1
+                    "Детская", "Childroom" -> R.drawable.child
+                    else -> R.drawable.house
 
+                }
+                val room = Room(defId++.toString(), text, imageId, false, "OFF")
+                adapter.addRoom(room)
+                Toast.makeText(this, "Комната была создана", Toast.LENGTH_SHORT).show()
+                val date = Date()
+                val stroke = sdf.format(date) + "  Комната " + room.name + " была создана"
+                mDataBase.push().setValue(stroke)
             }
-            val room = Room(defId++.toString(),text,imageId,false,"OFF")
-            mDataBase.push().setValue(room)
-            adapter.addRoom(room)
+            else
+                Toast.makeText(this, "Название комнаты не было введено", Toast.LENGTH_SHORT).show()
         }
 
         builder.setNeutralButton("Назад"){ dialogInterface , which ->
@@ -97,44 +107,63 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     }
 
     fun CreateDevice(){
+        if(adapter.roomList.isNotEmpty()) {
+            var builder = AlertDialog.Builder(this)
+            builder.setTitle("Окно редактирования устройства")
+            builder.setPositiveButton("OK") { dialogInterface, which ->
+                var dialog = dialogInterface as AlertDialog
+                var editText = dialog.findViewById<EditText>(R.id.edDeviceName)
+                val text = editText?.text.toString()
+                if(text != "") {
+                    val selectedDeviceType =
+                        dialog.findViewById<RadioButton>(dialog.rgDeviceType.checkedRadioButtonId)
+                        val typePosition = dialog.rgDeviceType.indexOfChild(selectedDeviceType)
+                        val imageId = when (typePosition) {
+                            0 -> R.drawable.device_off
+                            1 -> R.drawable.dimmer_off
+                            2 -> R.drawable.sensor
+                            3 -> R.drawable.gerkon
+                            else -> {
+                                R.drawable.device_off
+                            }
+                        }
+                        val selectedRadioButton =
+                            dialog.findViewById<RadioButton>(dialog.rgRoomName.checkedRadioButtonId)
+                        val position = dialog.rgRoomName.indexOfChild(selectedRadioButton)
+                        val room = adapter.roomList[position]
+                        val device = Device(0, text, room.name, imageId, false, "OFF", typePosition)
+                        room.Devices.add(device)
+                        devAdapter.addDevice(device)
+                        adapter.notifyDataSetChanged()
+                        Toast.makeText(this, "Устройство создано", Toast.LENGTH_SHORT).show()
+                        val date = Date()
+                        val stroke = sdf.format(date) + "  Устройство " + device.name + " в комнате " + device.roomName + " было создано"
+                        mDataBase.push().setValue(stroke)
+                }
+                else
+                    Toast.makeText(this, "Название устройства не было введено", Toast.LENGTH_SHORT).show()
 
-        var builder = AlertDialog.Builder(this)
-        builder.setTitle("Окно редактирования устройства")
-        builder.setPositiveButton("OK"){ dialogInterface , which ->
-            var dialog = dialogInterface as AlertDialog
-            var editText = dialog.findViewById<EditText>(R.id.edDeviceName)
-            val text = editText?.text.toString()
-            val selectedDeviceType = dialog.findViewById<RadioButton>(dialog.rgDeviceType.checkedRadioButtonId)
-            val typePosition = dialog.rgDeviceType.indexOfChild(selectedDeviceType)
-            val imageId = when(typePosition){
-                0 -> R.drawable.device_off
-                1 -> R.drawable.dimmer_off
-                2 -> R.drawable.sensor_off
-                3 -> R.drawable.door_off
-                else -> {R.drawable.device_off}
             }
-            val selectedRadioButton = dialog.findViewById<RadioButton>(dialog.rgRoomName.checkedRadioButtonId)
-            val position = dialog.rgRoomName.indexOfChild(selectedRadioButton)
-            val room = adapter.roomList[position]
-            val device = Device(0,text,room.name, imageId, false, "OFF",typePosition)
-            room.Devices.add(device)
-            devAdapter.addDevice(device)
-            adapter.notifyDataSetChanged()
-            mDataBase.push().setValue(device)
-        }
 
-        builder.setNeutralButton("Назад"){ dialogInterface , which ->
-        }
-        var cl = layoutInflater.inflate(R.layout.device_dialog, null)
-        adapter.roomList.forEach{
-        var rb = RadioButton(this)
-        rb.text = it.name
-        rb.id = 100+it.id.toInt()
-        cl.rgRoomName.addView(rb)
-    }
+            builder.setNeutralButton("Назад") { dialogInterface, which ->
+            }
+            var cl = layoutInflater.inflate(R.layout.device_dialog, null)
+            adapter.roomList.forEach {
+                var set = 0
+                var rb = RadioButton(this)
+                if (set == 0)
+                    rb.isChecked = true
+                rb.text = it.name
+                rb.id = 100 + it.id.toInt()
+                cl.rgRoomName.addView(rb)
+                set++
+            }
 
-        builder.setView(cl)
-        builder.show()
+            builder.setView(cl)
+            builder.show()
+        }
+        else
+            Toast.makeText(this, "Не найдено ни одной комнаты", Toast.LENGTH_SHORT).show()
     }
 
     fun ViewMenu()
@@ -189,7 +218,37 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         builder.setTitle("Вы действительно хотите удалить комнату?")
         builder.setMessage("Подтвердите удаление")
         builder.setPositiveButton("Удалить") { dialogInterface, which ->
+            room.Devices.forEach {
+                devAdapter.deviceList.remove(it)
+            }
+            devAdapter.notifyDataSetChanged()
             adapter.removeRoom(room)
+            Toast.makeText(this, "Комната удалена", Toast.LENGTH_SHORT).show()
+            val date = Date()
+            val stroke = sdf.format(date) + "  Удаление комнаты " + room.name
+            mDataBase.push().setValue(stroke)
+        }
+        builder.setNeutralButton("Назад"){ dialogInterface , which ->
+        }
+        builder.show()
+    }
+
+    override fun OnClick(device: Device) {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("Вы действительно хотите удалить устройство?")
+        builder.setMessage("Подтвердите удаление")
+        builder.setPositiveButton("Удалить") { dialogInterface, which ->
+            devAdapter.removeDevice(device)
+            adapter.roomList.forEach{
+                if(it.name == device.roomName) {
+                    it.Devices.remove(device)
+                    adapter.checkStateRoom(it)
+                }
+            }
+            Toast.makeText(this, "Устройство удалено", Toast.LENGTH_SHORT).show()
+            val date = Date()
+            val stroke = sdf.format(date) + "  Удаление датчика " + device.name + " из комнаты " + device.roomName
+            mDataBase.push().setValue(stroke)
         }
         builder.setNeutralButton("Назад"){ dialogInterface , which ->
         }
@@ -197,6 +256,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
     }
 
     override fun OnSwitch(device: Device, state: Boolean) {
+        val date = Date()
         if(state)
         {
             device.imageId = R.drawable.device_on
@@ -208,6 +268,8 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                     adapter.setStateRoom(it)
                 }
             }
+            val stroke = sdf.format(date) + "  Устройство " + device.name + ", " + device.roomName + " было включено"
+            mDataBase.push().setValue(stroke)
         }
         else{
             device.imageId = R.drawable.device_off
@@ -218,6 +280,8 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                     adapter.checkStateRoom(it)
                 }
             }
+            val stroke = sdf.format(date) + "  Устройство " + device.name + ", " + device.roomName + " было выключено"
+            mDataBase.push().setValue(stroke)
         }
         devAdapter.notifyDataSetChanged()
         adapter.notifyDataSetChanged()
@@ -245,9 +309,39 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             }
         }
     }
+    override fun SensorClick(device: Device) {
+        if(!device.state) {
+            imgSensorState.setImageResource(R.drawable.sensor_state_on)
+            device.state = true
+            val date = Date()
+            val stroke = sdf.format(date) + "  Датчик " + device.name + ", " + device.roomName + " был активирован"
+            mDataBase.push().setValue(stroke)
+        }
+        else {
+            imgSensorState.setImageResource(R.drawable.sensor_state_off)
+            device.state = false
+        }
+    }
 
-    override fun save() {
+    override fun GerkonClick(device: Device) {
+        if(!device.state) {
+            imgGerkonState.setImageResource(R.drawable.gerkon_state_on)
+            device.state = true
+            val date = Date()
+            val stroke = sdf.format(date) + "  Геркон " + device.name + ", " + device.roomName + " был активирован"
+            mDataBase.push().setValue(stroke)
+        }
+        else {
+            imgGerkonState.setImageResource(R.drawable.gerkon_state_off)
+            device.state = false
+        }
+    }
+
+    override fun save(device: Device) {
         devAdapter.notifyDataSetChanged()
+        val date = Date()
+        val stroke = sdf.format(date) + "  Диммер " + device.name + ", " + device.roomName + " был изменён"
+        mDataBase.push().setValue(stroke)
     }
 
 

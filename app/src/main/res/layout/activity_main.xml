@@ -172,9 +172,10 @@
                 android:id="@+id/btnAddDevice"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/add_device"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="20dp"
+                android:background="@drawable/add_device"
+                android:layout_marginBottom="10dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvDevice"
