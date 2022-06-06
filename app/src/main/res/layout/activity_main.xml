@@ -129,7 +129,7 @@
                     android:layout_height="120sp"
                     android:layout_marginRight="10sp"
                     android:layout_weight="1"
-                    android:background="@drawable/back_journal_off"
+                    android:background="@drawable/back_scenary_off"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:paddingBottom="90dp"
@@ -141,24 +141,6 @@
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/Scenary"
-                    android:layout_width="120sp"
-                    android:layout_height="120sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back_scenary_off"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingBottom="90dp"
-                    android:shadowColor="@color/black"
-                    android:shadowDx="5"
-                    android:shadowDy="5"
-                    android:shadowRadius="4"
-                    android:text="Сценарии"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -166,7 +148,7 @@
             android:id="@+id/rcvRoom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="visible">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -198,13 +180,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
-            <Button
-                android:id="@+id/btnResetJournal"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Обновить" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnResetJournal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_background"
+                    android:paddingLeft="15dp"
+                    android:text="Считать"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnDeleteJournal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_background"
+                    android:text="Очистить"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/lvJournal"

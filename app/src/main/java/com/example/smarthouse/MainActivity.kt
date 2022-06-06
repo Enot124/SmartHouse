@@ -64,6 +64,9 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         binding.btnResetJournal.setOnClickListener{
             ResetJournal()
         }
+        binding.btnDeleteJournal.setOnClickListener {
+            DeleteJournal()
+        }
     }
 
     private fun init(){
@@ -195,7 +198,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         binding.llJournal.visibility = View.GONE
         binding.House.background = getDrawable(R.drawable.back_house_on)
         binding.Room.background = getDrawable(R.drawable.back_light_off)
-        binding.Journal.background = getDrawable(R.drawable.back_journal_off)
+        binding.Journal.background = getDrawable(R.drawable.back_scenary_off)
     }
 
     fun GoRoom()
@@ -205,7 +208,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         binding.llJournal.visibility = View.GONE
         binding.House.background = getDrawable(R.drawable.back_house_off)
         binding.Room.background = getDrawable(R.drawable.back_light_on)
-        binding.Journal.background = getDrawable(R.drawable.back_journal_off)
+        binding.Journal.background = getDrawable(R.drawable.back_scenary_off)
     }
 
     fun GoJournal()
@@ -215,7 +218,7 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         binding.llJournal.visibility = View.VISIBLE
         binding.House.background = getDrawable(R.drawable.back_house_off)
         binding.Room.background = getDrawable(R.drawable.back_light_off)
-        binding.Journal.background = getDrawable(R.drawable.back_journal_on)
+        binding.Journal.background = getDrawable(R.drawable.back_scenary_on)
     }
 
     fun SetNotification()
@@ -251,9 +254,23 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             }
         }
         mDataBase.addValueEventListener(vListener)
-
-
     }
+
+    fun DeleteJournal()
+    {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("Вы действительно хотите удалить все данные журнала?")
+        builder.setMessage("Подтвердите удаление")
+        builder.setPositiveButton("Удалить") { dialogInterface, which ->
+            mDataBase.setValue(null)
+            journal.clear()
+            Toast.makeText(this, "Журнал очищен", Toast.LENGTH_SHORT).show()
+        }
+        builder.setNeutralButton("Назад"){ dialogInterface , which ->
+        }
+        builder.show()
+    }
+
 
     override fun OnClick(room: Room) {
         var builder = AlertDialog.Builder(this)
