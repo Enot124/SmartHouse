@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.device_dialog.view.*
 import kotlinx.android.synthetic.main.device_item.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.ListenerDevice{
@@ -138,18 +137,17 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
                                 R.drawable.device_off
                             }
                         }
-                        val selectedRadioButton =
-                            dialog.findViewById<RadioButton>(dialog.rgRoomName.checkedRadioButtonId)
-                        val position = dialog.rgRoomName.indexOfChild(selectedRadioButton)
-                        val room = adapter.roomList[position]
-                        val device = Device(0, text, room.name, imageId, false, "OFF", typePosition)
-                        room.Devices.add(device)
-                        devAdapter.addDevice(device)
-                        adapter.notifyDataSetChanged()
-                        Toast.makeText(this, "Устройство создано", Toast.LENGTH_SHORT).show()
-                        val date = Date()
-                        val stroke = sdf.format(date) + "  Устройство \"" + device.name + "\" в комнате " + device.roomName + " было создано"
-                        mDataBase.push().setValue(stroke)
+                    val selectedRadioButton = dialog.findViewById<RadioButton>(dialog.rgRoomName.checkedRadioButtonId)
+                    val position = dialog.rgRoomName.indexOfChild(selectedRadioButton)
+                    val room = adapter.roomList[position]
+                    val device = Device(defId++.toString(), text, room.name, imageId, false, "OFF", typePosition)
+                    room.Devices.add(device)
+                    devAdapter.addDevice(device)
+                    adapter.notifyDataSetChanged()
+                    Toast.makeText(this, "Устройство создано", Toast.LENGTH_SHORT).show()
+                    val date = Date()
+                    val stroke = sdf.format(date) + "  Устройство \"" + device.name + "\" в комнате " + device.roomName + " было создано"
+                    mDataBase.push().setValue(stroke)
                 }
                 else
                     Toast.makeText(this, "Название устройства не было введено", Toast.LENGTH_SHORT).show()
@@ -250,7 +248,6 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-
             }
         }
         mDataBase.addValueEventListener(vListener)
@@ -400,6 +397,4 @@ class MainActivity : AppCompatActivity() , RoomAdapter.Listener, DeviceAdapter.L
         val stroke = sdf.format(date) + "  Диммер \"" + device.name + "\", " + device.roomName + " был изменён"
         mDataBase.push().setValue(stroke)
     }
-
-
 }

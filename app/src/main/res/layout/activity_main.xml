@@ -13,9 +13,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-80dp">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -69,80 +67,71 @@
                 android:textSize="20dp" />
         </RelativeLayout>
 
-        <HorizontalScrollView
-            android:id="@+id/ScrollMenu"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/LayoutScrollMenu"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
             android:layout_weight="0"
-            android:scrollbars="none"
-            tools:visibility="visible">
+            android:orientation="horizontal"
+            android:layout_marginBottom="40dp">
 
-            <LinearLayout
-                android:id="@+id/LayoutScrollMenu"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+            <Button
+                android:id="@+id/House"
+                android:layout_width="120sp"
+                android:layout_height="120sp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="10sp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:background="@drawable/back_house_on"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingBottom="90dp"
+                android:shadowColor="@color/black"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="4"
+                android:text="Дом"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:cornerRadius="25dp" />
 
-                <Button
-                    android:id="@+id/House"
-                    android:layout_width="120sp"
-                    android:layout_height="120sp"
-                    android:layout_marginLeft="15sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back_house_on"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingBottom="90dp"
-                    android:shadowColor="@color/black"
-                    android:shadowDx="5"
-                    android:shadowDy="5"
-                    android:shadowRadius="4"
-                    android:text="Дом"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    app:cornerRadius="25dp" />
+            <Button
+                android:id="@+id/Room"
+                android:layout_width="120sp"
+                android:layout_height="120sp"
+                android:layout_marginRight="10sp"
+                android:layout_weight="1"
+                android:background="@drawable/back_light_off"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingBottom="90dp"
+                android:shadowColor="@color/black"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="4"
+                android:text="Освещение"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/Room"
-                    android:layout_width="120sp"
-                    android:layout_height="120sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back_light_off"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingBottom="90dp"
-                    android:shadowColor="@color/black"
-                    android:shadowDx="5"
-                    android:shadowDy="5"
-                    android:shadowRadius="4"
-                    android:text="Освещение"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+            <Button
+                android:id="@+id/Journal"
+                android:layout_width="120sp"
+                android:layout_height="120sp"
+                android:layout_marginRight="10sp"
+                android:layout_weight="1"
+                android:background="@drawable/back_scenary_off"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingBottom="90dp"
+                android:shadowColor="@color/black"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="4"
+                android:text="Журнал"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/Journal"
-                    android:layout_width="120sp"
-                    android:layout_height="120sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back_scenary_off"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingBottom="90dp"
-                    android:shadowColor="@color/black"
-                    android:shadowDx="5"
-                    android:shadowDy="5"
-                    android:shadowRadius="4"
-                    android:text="Журнал"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-        </HorizontalScrollView>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvRoom"
@@ -171,7 +160,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvDevice"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
